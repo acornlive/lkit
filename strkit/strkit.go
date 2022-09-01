@@ -1,6 +1,7 @@
 package strkit
 
 import (
+	"fmt"
 	"math/rand"
 	"regexp"
 	"strconv"
@@ -213,7 +214,7 @@ func FormatParam(str string, dataMap map[string]string) string {
 	return str
 }
 
-func Format(str, placeHolder string, args ...string) string {
+func Format(str, placeHolder string, args ...any) string {
 
 	if IsBlank(str) || IsBlank(placeHolder) || args == nil || len(args) == 0 {
 		return str
@@ -230,7 +231,20 @@ func Format(str, placeHolder string, args ...string) string {
 			break
 		}
 		builder.WriteString(str[:delimIndex])
-		builder.WriteString(arg)
+		switch arg.(type) {
+		case int:
+			builder.WriteString(strconv.Itoa(arg.(int)))
+		case float64:
+			float := strconv.FormatFloat(arg.(float64), 'f', -1, 64)
+			builder.WriteString(float)
+		case string:
+			builder.WriteString(arg.(string))
+		case time.Time:
+			t := arg.(time.Time)
+			builder.WriteString(FormatTime(t))
+		default:
+			builder.WriteString(fmt.Sprintf("%v", arg))
+		}
 		delimIndex = delimIndex + placeHolderLen
 		str = str[delimIndex:]
 	}

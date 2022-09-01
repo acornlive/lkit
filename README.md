@@ -22,3 +22,9 @@ golang develop kit
     IsCarNo
     IsIdCard
     ...
+#### log kit
+    Trace
+    Debug
+    Info
+    Warn
+    Error
